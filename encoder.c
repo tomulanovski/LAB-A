@@ -32,9 +32,18 @@ int main(int argc, char *argv[]) {
              }
         }
          if (argv[i][0] == '-' && argv[i][1] == 'I'){
-
+             infile = fopen(argv[i] + 2, "r");
+             if (infile == NULL) {
+                 fprintf(stderr, "Error: Cannot open input file %s\n", argv[i] + 2);
+                 exit(EXIT_FAILURE);
+             }
          }
         if (argv[i][0] == '-' && argv[i][1] == 'O'){
+            outfile = fopen(argv[i] + 2, "w");
+            if (outfile == NULL) {
+                fprintf(stderr, "Error: Cannot open output file %s\n", argv[i] + 2);
+                exit(EXIT_FAILURE);
+            }
 
         }
 
@@ -64,6 +73,13 @@ int main(int argc, char *argv[]) {
     } while(1);
 
     // Close the output stream
-    fclose(outfile);
+    if (outfile != stdout) {
+        fclose(outfile);
+    }
+
+    // Close the input stream if it's not stdin
+    if (infile != stdin) {
+        fclose(infile);
+    }
     return 0;
 }
