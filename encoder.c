@@ -31,9 +31,19 @@ int main(int argc, char *argv[]) {
                  debug = 1;
              }
         }
+         if (argv[i][0] == '-' && argv[i][1] == 'I'){
+
+         }
+        if (argv[i][0] == '-' && argv[i][1] == 'O'){
+
+        }
+
     }
-    int ch;
-    while ((ch = fgetc(infile)) != EOF) {
+    do{
+       char ch= fgetc(infile);
+       if (feof(infile)) {
+           break;
+       }
         if (encode) {
             if ((ch >= 'A' && ch <= 'Z') || (ch >= '0' && ch <= '9')) {
                 if (encode == 1) {
@@ -50,13 +60,8 @@ int main(int argc, char *argv[]) {
                 }
             }
         }
-
-        if (debug) {
-            fprintf(stderr, "Character: %c\n", (char)ch);
-        }
-
         fputc(ch, outfile);
-    }
+    } while(1);
 
     // Close the output stream
     fclose(outfile);
