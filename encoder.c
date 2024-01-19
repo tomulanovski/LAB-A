@@ -5,7 +5,7 @@
 int main(int argc, char *argv[]) {
     int debug = 1;
     int encode = 0;
-    int encKey = 0;
+    const char *encKey = 0;
     FILE *infile = stdin;
     FILE *outfile = stdout;
 
@@ -21,7 +21,7 @@ int main(int argc, char *argv[]) {
             else if (argv[i][0] == '+'){
                 encode = 1;
             }
-            encKey = atoi(argv[i] + 2);
+            encKey = argv[i] + 2;
         }
          if (argv[i][1] == 'D') {
              if (argv[i][0] == '-'){
@@ -35,30 +35,30 @@ int main(int argc, char *argv[]) {
              infile = fopen(argv[i] + 2, "r");
              if (infile == NULL) {
                  fprintf(stderr, "Error: Cannot open input file %s\n", argv[i] + 2);
-                 exit(EXIT_FAILURE);
+                 exit(1);
              }
          }
         if (argv[i][0] == '-' && argv[i][1] == 'O'){
             outfile = fopen(argv[i] + 2, "w");
             if (outfile == NULL) {
                 fprintf(stderr, "Error: Cannot open output file %s\n", argv[i] + 2);
-                exit(EXIT_FAILURE);
+                exit(1);
             }
-
         }
-
     }
+    const char *encTmp = encKey;
     do{
        char ch= fgetc(infile);
+       int keyDig = *encTmp - '0';
        if (feof(infile)) {
            break;
        }
         if (encode) {
             if ((ch >= 'A' && ch <= 'Z') || (ch >= '0' && ch <= '9')) {
                 if (encode == 1) {
-                    ch += encKey;
+                    ch += keyDig;
                 } else {
-                    ch -= encKey;
+                    ch -= keyDig;
                 }
 
                 // Wrap around for uppercase letters
@@ -69,15 +69,20 @@ int main(int argc, char *argv[]) {
                 }
             }
         }
+
+        encTmp++;
+
+        // If we reached the end of the encoding key, reset to the beginning
+        if (*encTmp == '\0') {
+            encTmp = encKey;
+        }
         fputc(ch, outfile);
     } while(1);
 
-    // Close the output stream
     if (outfile != stdout) {
         fclose(outfile);
     }
 
-    // Close the input stream if it's not stdin
     if (infile != stdin) {
         fclose(infile);
     }
