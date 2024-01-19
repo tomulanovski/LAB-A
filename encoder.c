@@ -54,7 +54,7 @@ int main(int argc, char *argv[]) {
            break;
        }
         if (encode) {
-            if ((ch >= 'A' && ch <= 'Z') || (ch >= '0' && ch <= '9')) {
+            if (ch >= 'A' && ch <= 'Z') {
                 if (encode == 1) {
                     ch += keyDig;
                 } else {
@@ -66,6 +66,14 @@ int main(int argc, char *argv[]) {
                     ch -= 26;
                 } else if (ch < 'A') {
                     ch += 26;
+                }
+            }
+            else if (ch >= '0' && ch <= '9') {
+                if (encode==1){
+                    ch = '0' + (ch + keyDig - '0');
+                }
+                else {
+                    ch = '0' + (ch - keyDig - '0');
                 }
             }
         }
