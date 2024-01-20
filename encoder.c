@@ -47,13 +47,15 @@ int main(int argc, char *argv[]) {
         }
     }
     const char *encTmp = encKey;
-    do{
-       char ch= fgetc(infile);
-       int keyDig = *encTmp - '0';
-       if (feof(infile)) {
-           break;
-       }
+    do {
+        char ch = fgetc(infile);
+        if (feof(infile)) {
+            fprintf(stderr, "EOF: Exiting\n");
+            break;
+
+        }
         if (encode) {
+            int keyDig = *encTmp - '0';
             if (ch >= 'A' && ch <= 'Z') {
                 if (encode == 1) {
                     ch += keyDig;
@@ -67,23 +69,26 @@ int main(int argc, char *argv[]) {
                 } else if (ch < 'A') {
                     ch += 26;
                 }
-            }
-            else if (ch >= '0' && ch <= '9') {
-                if (encode==1){
+            } else if (ch >= '0' && ch <= '9') {
+                if (encode == 1) {
                     ch = '0' + (ch + keyDig - '0');
-                }
-                else {
+                } else {
                     ch = '0' + (ch - keyDig - '0');
                 }
+                if (ch < '0') {
+                    ch += 10;
+                } else if (ch > '9') {
+                    ch -= 10;
+                }
+            }
+            encTmp++;
+
+            // If we reached the end of the encoding key, reset to the beginning
+            if (*encTmp == '\0') {
+                encTmp = encKey;
             }
         }
 
-        encTmp++;
-
-        // If we reached the end of the encoding key, reset to the beginning
-        if (*encTmp == '\0') {
-            encTmp = encKey;
-        }
         fputc(ch, outfile);
     } while(1);
 
