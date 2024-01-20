@@ -1,10 +1,10 @@
 all: encoder
 
 encoder: encoder.o
-	gcc -Wall -g encoder.o -o encoder
+	gcc -m32 -Wall -g encoder.o -o encoder
 
 encoder.o: encoder.c
-	gcc -Wall -g -c encoder.c
+	gcc -m32 -Wall -g -c encoder.c
 
 .PHONY: clean
 
